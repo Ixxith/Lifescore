@@ -1,0 +1,44 @@
+{
+  "name": "worldgen",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "ts-node ./src/index.ts",
+    "dev": "ts-node-dev --respawn ./src/index.ts"
+  },
+  "dependencies": {
+    "@types/express": "^4.0.0",
+    "@types/koa": "^2.0.46",
+    "@types/koa-bodyparser": "^5.0.1",
+    "@types/koa-router": "^7.0.31",
+    "@types/node": "^10.9.4",
+    "ejs": "^3.1.6",
+    "express": "^4.15.2",
+    "koa": "^2.5.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "nodemon": "^1.18.4",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.0.3"
+  },
+  "engines": {
+    "node": "10.x"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ixxith/World-Simulation.git"
+  },
+  "author": "Ian Cole",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ixxith/World-Simulation/issues"
+  },
+  "homepage": "https://github.com/Ixxith/World-Simulation#readme",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "ts-node": "^10.7.0",
+    "ts-node-dev": "^1.1.8"
+  }
+}

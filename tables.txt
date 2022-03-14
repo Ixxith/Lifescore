@@ -1,0 +1,299 @@
+https://codverter.com/src/sqltoclass
+
+CREATE TABLE "Location" (
+  "LocationId" Number,
+  PRIMARY KEY ("LocationId")
+);
+
+CREATE TABLE "Country" (
+  "CountryId" Number,
+  "Name" Varchar,
+  "Size" Number,
+  "Landlocked" Boolean,
+  "GovernmentId" Number,
+  "Innovation" Number,
+  "Capital" Number,
+  PRIMARY KEY ("CountryId")
+);
+
+CREATE TABLE "Army" (
+  "ArmyId" Number,
+  "CountryId" Number,
+  "General" Number,
+  "Food" Number,
+  "LocationId" Number,
+  PRIMARY KEY ("ArmyId"),
+  CONSTRAINT "FK_Army.LocationId"
+    FOREIGN KEY ("LocationId")
+      REFERENCES "Location"("LocationId"),
+  CONSTRAINT "FK_Army.CountryId"
+    FOREIGN KEY ("CountryId")
+      REFERENCES "Country"("CountryId"),
+  CONSTRAINT "FK_Army.General"
+    FOREIGN KEY ("General")
+      REFERENCES "Person"("PersonId")
+);
+
+CREATE TABLE "Profession" (
+  "ProfessionId" Number,
+  "Name" Varchar,
+  "EducationRequirement" Number,
+  "Pay" Varchar,
+  "MaxPerTown" Number,
+  "MaxPerCountry" Number,
+  PRIMARY KEY ("ProfessionId")
+);
+
+CREATE TABLE "Person" (
+  "PersonId" Number,
+  "Nationality" Varchar,
+  "Location" Number,
+  "Race" Number,
+  "Wealth" Number,
+  "EducationLevel" Number,
+  "MilitaryTraining" Number,
+  "MagicLevel" Number,
+  "ArmyId" Type,
+  "Born" Date,
+  "Died" Date,
+  "Sex" Varchar,
+  "Mother" Number,
+  "Father" Number,
+  "Boss" Number,
+  "ProfessionId" Number,
+  PRIMARY KEY ("PersonId"),
+  CONSTRAINT "FK_Person.Location"
+    FOREIGN KEY ("Location")
+      REFERENCES "Location"("LocationId"),
+  CONSTRAINT "FK_Person.Mother"
+    FOREIGN KEY ("Mother")
+      REFERENCES "Person"("PersonId"),
+  CONSTRAINT "FK_Person.Father"
+    FOREIGN KEY ("Father")
+      REFERENCES "Person"("PersonId"),
+  CONSTRAINT "FK_Person.Boss"
+    FOREIGN KEY ("Boss")
+      REFERENCES "Person"("PersonId"),
+  CONSTRAINT "FK_Person.ArmyId"
+    FOREIGN KEY ("ArmyId")
+      REFERENCES "Army"("ArmyId"),
+  CONSTRAINT "FK_Person.ProfessionId"
+    FOREIGN KEY ("ProfessionId")
+      REFERENCES "Profession"("ProfessionId")
+);
+
+CREATE TABLE "Race" (
+  "Race" Number,
+  "Name" Varchar,
+  "Size" Number,
+  "MaxAge" Boolean,
+  "CombatMultiplier" Float,
+  "MagicMultiplier" Float,
+  PRIMARY KEY ("Race"),
+  CONSTRAINT "FK_Race.Race"
+    FOREIGN KEY ("Race")
+      REFERENCES "Person"("Race")
+);
+
+CREATE TABLE "PersonEvent" (
+  "EventId" Number,
+  "Description" Varchar,
+  PRIMARY KEY ("EventId")
+);
+
+CREATE TABLE "PersonInteraction" (
+  "InteractionId" Number,
+  "Person" Number,
+  "Person2" Number,
+  "Relationship" Number,
+  PRIMARY KEY ("InteractionId"),
+  CONSTRAINT "FK_PersonInteraction.Person2"
+    FOREIGN KEY ("Person2")
+      REFERENCES "Person"("PersonId"),
+  CONSTRAINT "FK_PersonInteraction.Person"
+    FOREIGN KEY ("Person")
+      REFERENCES "Person"("PersonId")
+);
+
+CREATE TABLE "EventRelationshipChange" (
+  "ChangeId" Number,
+  "EventId" Number,
+  "InteractionId" Number,
+  "RelationshipChange" Number,
+  "Note" Varchar,
+  PRIMARY KEY ("ChangeId"),
+  CONSTRAINT "FK_EventRelationshipChange.EventId"
+    FOREIGN KEY ("EventId")
+      REFERENCES "PersonEvent"("EventId"),
+  CONSTRAINT "FK_EventRelationshipChange.InteractionId"
+    FOREIGN KEY ("InteractionId")
+      REFERENCES "PersonInteraction"("InteractionId")
+);
+
+CREATE TABLE "Battle" (
+  "BattleId" Number,
+  "LocationId" Number,
+  PRIMARY KEY ("BattleId"),
+  CONSTRAINT "FK_Battle.LocationId"
+    FOREIGN KEY ("LocationId")
+      REFERENCES "Location"("LocationId")
+);
+
+CREATE TABLE "InteractionEvent" (
+  "InteractionEventId" Number,
+  "InteractionId" Number,
+  "EventId" Number,
+  "RelationshipChange" Number,
+  PRIMARY KEY ("InteractionEventId")
+);
+
+CREATE TABLE "PersonEventInvolvement" (
+  "InvolvementId" Number,
+  "EventId" Number,
+  "PersonId" Number,
+  "Note" Varchar,
+  PRIMARY KEY ("InvolvementId"),
+  CONSTRAINT "FK_PersonEventInvolvement.EventId"
+    FOREIGN KEY ("EventId")
+      REFERENCES "PersonEvent"("EventId"),
+  CONSTRAINT "FK_PersonEventInvolvement.EventId"
+    FOREIGN KEY ("EventId")
+      REFERENCES "Person"("PersonId")
+);
+
+CREATE TABLE "Government" (
+  "GovernmentId" Number,
+  "Name" Varchar,
+  "Type" Varchar,
+  "Cohesion" Number,
+  "Power" Number,
+  "Funds" Number,
+  PRIMARY KEY ("GovernmentId")
+);
+
+CREATE TABLE "Biome" (
+  "BiomeId" Number,
+  "Name" Varchar,
+  PRIMARY KEY ("BiomeId")
+);
+
+CREATE TABLE "Town" (
+  "LocationId" Number,
+  "TownId" Number,
+  "CountryId" Number,
+  "Name" Varchar,
+  "Food" Number,
+  "Resources" Number,
+  "Crime" Number,
+  "Corruption" Number,
+  "BiomeId" Number,
+  "Military" Number,
+  "Education" Number,
+  "Funds" Number,
+  "Goods" Number,
+  PRIMARY KEY ("TownId"),
+  CONSTRAINT "FK_Town.BiomeId"
+    FOREIGN KEY ("BiomeId")
+      REFERENCES "Biome"("BiomeId"),
+  CONSTRAINT "FK_Town.CountryId"
+    FOREIGN KEY ("CountryId")
+      REFERENCES "Country"("CountryId")
+);
+
+CREATE TABLE "Policy" (
+  "PolicyId" Number,
+  "GovernmentId" Number,
+  "Enacted" Date,
+  "Canceled" Date,
+  "Description" Varchar,
+  PRIMARY KEY ("PolicyId"),
+  CONSTRAINT "FK_Policy.GovernmentId"
+    FOREIGN KEY ("GovernmentId")
+      REFERENCES "Government"("GovernmentId")
+);
+
+CREATE TABLE "RaceInteraction" (
+  "InteractionId" Number,
+  "Race" Number,
+  "Race2" Number,
+  "Relationship" Number,
+  "Note" Varchar,
+  PRIMARY KEY ("InteractionId"),
+  CONSTRAINT "FK_RaceInteraction.Race2"
+    FOREIGN KEY ("Race2")
+      REFERENCES "Race"("Race"),
+  CONSTRAINT "FK_RaceInteraction.InteractionId"
+    FOREIGN KEY ("InteractionId")
+      REFERENCES "InteractionEvent"("InteractionId"),
+  CONSTRAINT "FK_RaceInteraction.Race"
+    FOREIGN KEY ("Race")
+      REFERENCES "Race"("Race")
+);
+
+CREATE TABLE "Road" (
+  "LocationId" Number,
+  "RoadId" Number,
+  "RoadName" Varchar,
+  "TownId" Number,
+  "Town2Id" Number,
+  "Danger" Number,
+  "Condition" Number,
+  PRIMARY KEY ("RoadId"),
+  CONSTRAINT "FK_Road.TownId"
+    FOREIGN KEY ("TownId")
+      REFERENCES "Town"("TownId")
+);
+
+CREATE TABLE "BiomePreference" (
+  "PreferenceId" Number,
+  "BiomeId" Number,
+  "RaceId" Number,
+  "PreferenceLevel" Boolean,
+  PRIMARY KEY ("PreferenceId"),
+  CONSTRAINT "FK_BiomePreference.RaceId"
+    FOREIGN KEY ("RaceId")
+      REFERENCES "Race"("Race"),
+  CONSTRAINT "FK_BiomePreference.BiomeId"
+    FOREIGN KEY ("BiomeId")
+      REFERENCES "Biome"("BiomeId")
+);
+
+CREATE TABLE "BattleParticipant" (
+  "PariticipantId" Number,
+  "ArmyId" Number,
+  "BattleId" Number,
+  "Casulties" Number,
+  PRIMARY KEY ("PariticipantId"),
+  CONSTRAINT "FK_BattleParticipant.ArmyId"
+    FOREIGN KEY ("ArmyId")
+      REFERENCES "Army"("ArmyId"),
+  CONSTRAINT "FK_BattleParticipant.BattleId"
+    FOREIGN KEY ("BattleId")
+      REFERENCES "Battle"("BattleId")
+);
+
+CREATE TABLE "CountryInteraction" (
+  "InteractionId" Number,
+  "CountryId" Number,
+  "Country2Id" Number,
+  "Status" Varchar,
+  "Immigration" Varchar,
+  "Trade" Varchar,
+  PRIMARY KEY ("InteractionId"),
+  CONSTRAINT "FK_CountryInteraction.Country2Id"
+    FOREIGN KEY ("Country2Id")
+      REFERENCES "Country"("CountryId"),
+  CONSTRAINT "FK_CountryInteraction.CountryId"
+    FOREIGN KEY ("CountryId")
+      REFERENCES "Country"("CountryId")
+);
+
+CREATE TABLE "RaceEvent" (
+  "EventId" Number,
+  "Event" Number,
+  PRIMARY KEY ("EventId"),
+  CONSTRAINT "FK_RaceEvent.EventId"
+    FOREIGN KEY ("EventId")
+      REFERENCES "InteractionEvent"("EventId")
+);
+
