@@ -1,6 +1,8 @@
 import express, {Request,Response,Application} from 'express';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+const { requiresAuth } = require('express-openid-connect');
+
 const app:Application = express();
 var path = require('path');
 app.use(express.static("public"));
@@ -21,9 +23,26 @@ const firebaseConfig = {
   measurementId: "G-E93SMMBSRJ"
 };
 
+// Authentication from OAuth
+
+const { auth } = require('express-openid-connect');
+
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: 'a long, randomly-generated string stored in env',
+  baseURL: 'http://localhost:3000',
+  clientID: 'QiPtqyVjhysUsf8pAPgabayzcUnPOKFf',
+  issuerBaseURL: 'https://dev-x6prcjz9.us.auth0.com'
+};
+
+// auth router attaches /login, /logout, and /callback routes to the baseURL
+app.use(auth(config));
+
+
 // Initialize Firebase
 const fb = initializeApp(firebaseConfig);
-const analytics = getAnalytics(fb);
+//const analytics = getAnalytics(fb);
 
 // The code below allows the node js to find the public directory with the index.html file
 const publicPath = path.join(__dirname, '../public');
@@ -32,10 +51,17 @@ const port = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 
 /* GET index page */
-app.get("/", (req:Request, res:Response):void => {
+app.get("/", (req:any, res:Response):void => {
   
-   // res.render('index', {output : "e"});
-   res.render('index');
+  let user = null;
+
+  if (req.oidc.isAuthenticated()) {
+    user = req.oidc.user
+  
+  }
+    
+    res.render('index', {userinfo : user});
+   //res.render('index');
 });
 
 app.listen(port, () => {
